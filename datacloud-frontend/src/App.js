@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { Form, Input, Header, Divider, TextArea } from 'semantic-ui-react';
-import { isEmpty } from 'ramda';
+import { Form, Input, Header, Divider, TextArea, Message } from 'semantic-ui-react';
+import { isEmpty, isNil } from 'ramda';
 
 function App() {
   const [input, setInputValue] = useReducer(
@@ -101,13 +101,14 @@ function App() {
         <Form.Button type='button' onClick={getItem} disabled={isEmpty(token)}>Get</Form.Button>
       </Form>
       <Divider hidden />
-      {!isEmpty(valueObject) &&
+      {!isNil(valueObject) && !isEmpty(valueObject) &&
         <span>
           {
             `${valueObject.key}: ${valueObject.value}`
           }
         </span>
       }
+      {isNil(valueObject) && <Message error>No value matches the provided token and key.</Message>}
     </div>
   );
 }
