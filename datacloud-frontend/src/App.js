@@ -15,7 +15,7 @@ function App() {
   );
   const [valueObject, setValueObject] = useState({});
   useEffect(() => {
-    fetch('http://localhost:8000/api/token', {
+    fetch('https://data-clouds.herokuapp.com/api/token', {
       method: 'GET',
     })
       .then((response) => response.json())
@@ -27,7 +27,7 @@ function App() {
     setInputValue({ [event.target.name]: event.target.value });
   };
   const createItem = () => {
-    fetch('http://localhost:8000/api/value', {
+    fetch('https://data-clouds.herokuapp.com/api/value', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ function App() {
     })
   };
   const getItem = () => {
-    fetch(`http://localhost:8000/api/value/${key}`, {
+    fetch(`https://data-clouds.herokuapp.com/api/value/${key}`, {
       method: 'GET',
       headers: { 'token': token }
     })
