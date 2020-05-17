@@ -14,14 +14,12 @@ app.use(express.json());
 
 app.get('/api/value/:key', (req, res)=>{
 
-    if(typeof req.headers.token === 'undefined'){
+    if(!req.headers.token){
       res.json({
         message: 'No token was provided. Please, provide a token.'
       });
     } else {
-      console.log('CALLED: ', req.headers.token, req.params.key)
       const value = cache.get(req.headers.token.concat(req.params.key));
-      console.log('VALUE: ', value)
       res.json({
         value
       })
@@ -36,12 +34,11 @@ app.get('/api/token', function(req, res){
 
 
 app.post('/api/value',(req, res)=>{
-    if(typeof req.headers.token === 'undefined'){
+    if(!req.headers.token){
       res.json({
         message: 'No token was provided. Please, provide a token.'
       });
     } else {
-      console.log('body: ', req.body);
       const message = createValueRow(req.headers.token, req.body);
       res.json({
         message
@@ -50,7 +47,6 @@ app.post('/api/value',(req, res)=>{
 })
 function createValueRow(token, dataToStore){
     const tokenKey = token.concat(dataToStore.key);
-    console.log('tokenKey: ', tokenKey)
     const success = cache.set( tokenKey, dataToStore );
     return success;
 }
