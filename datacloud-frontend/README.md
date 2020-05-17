@@ -1,4 +1,13 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Hosting with Firebase
+
+URL https://datacloud-frontend.firebaseapp.com/
+
+## Steps to follow for deploying to firebase:
+
+Run `npm run build`
+Run `firebase deploy`
+All good now.
 
 ## Available Scripts
 
