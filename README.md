@@ -10,3 +10,20 @@ Backend is setup with herokuapp where every commit to master automatically trigg
 - POST /api/value -> for creating a value with its key and token.
 - For `/api/value` and `/api/value/:key`, you need to pass in the header a token: <token_key> 
 - Download Postman and use this collection: https://www.getpostman.com/collections/e664ae9547adb6b7fb47.
+# Example: curl for getting token.
+`
+  curl --header "Content-Type: application/json"  \
+  --request GET  \
+        https://data-clouds.herokuapp.com/api/token
+`
+
+# Example: curl for inserting a value.
+`curl -H "Content-Type: application/json" -H "token: c9a5fc7a-34ba-4213-80de-e79ff98659c8" \
+  --request POST \
+  --data '{"key":"github","value":"data added here"}' \
+        https://data-clouds.herokuapp.com/api/value`
+
+# Example: curl for getting a value.
+  `curl -H "Content-Type: application/json" -H "token: c9a5fc7a-34ba-4213-80de-e79ff98659c8" \
+  --request GET \
+        https://data-clouds.herokuapp.com/api/value/github`
