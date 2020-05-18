@@ -18,12 +18,12 @@ Backend is setup with herokuapp where every commit to master automatically trigg
 `
 
 # Example: curl for inserting a value.
-`curl -H "token: c9a5fc7a-34ba-4213-80de-e79ff98659c8" \
+`curl -H "Content-Type: text/plain" -H "token: c9a5fc7a-34ba-4213-80de-e79ff98659c8" \
   --request PUT \
-  --data 'data added here.' \
+  --data "data added here." \
         https://data-clouds.herokuapp.com/api/value/github`
 
 # Example: curl for getting a value.
-  `curl -H "token: c9a5fc7a-34ba-4213-80de-e79ff98659c8" \
+  `curl -H "Content-Type: text/plain" -H "token: c9a5fc7a-34ba-4213-80de-e79ff98659c8" \
   --request GET \
         https://data-clouds.herokuapp.com/api/value/github`
