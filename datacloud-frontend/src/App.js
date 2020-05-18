@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import { Form, Input, Header, Divider, TextArea, Message } from 'semantic-ui-react';
-import { isEmpty, isNil } from 'ramda';
+import { isEmpty } from 'ramda';
 
 function App() {
   const [input, setInputValue] = useReducer(
@@ -13,13 +13,13 @@ function App() {
       token: ''
     }
   );
-  const [valueObject, setValueObject] = useState({});
+  const [itemValue, setValue] = useState('');
   useEffect(() => {
     fetch('https://data-clouds.herokuapp.com/api/token', {
       method: 'GET',
     })
-      .then((response) => response.json())
-      .then((result) => setInputValue({ newToken: result.token }))
+      .then((response) => response.text())
+      .then((result) => setInputValue({ newToken: result }))
   }, [])
   const { newToken, token, key, value, newKey } = input;
 
@@ -27,13 +27,12 @@ function App() {
     setInputValue({ [event.target.name]: event.target.value });
   };
   const createItem = () => {
-    fetch('https://data-clouds.herokuapp.com/api/value', {
-      method: 'POST',
+    fetch(`https://data-clouds.herokuapp.com/api/value/${newKey}`, {
+      method: 'PUT',
       headers: {
-        'Content-Type': 'application/json',
         'token': newToken
       },
-      body: JSON.stringify({ key: newKey, value })
+      body: value
     })
   };
   const getItem = () => {
@@ -41,8 +40,8 @@ function App() {
       method: 'GET',
       headers: { 'token': token }
     })
-      .then((response) => response.json())
-      .then((result) => setValueObject(result.value))
+      .then((response) => response.text())
+      .then((result)=> setValue(result))
   };
   return (
     <div style={{ margin: '1em' }}>
@@ -101,14 +100,13 @@ function App() {
         <Form.Button type='button' onClick={getItem} disabled={isEmpty(token)}>Get</Form.Button>
       </Form>
       <Divider hidden />
-      {!isNil(valueObject) && !isEmpty(valueObject) &&
+      {!isEmpty(itemValue) &&
         <span>
           {
-            `${valueObject.key}: ${valueObject.value}`
+            itemValue
           }
         </span>
       }
-      {isNil(valueObject) && <Message error>No value matches the provided token and key.</Message>}
     </div>
   );
 }
