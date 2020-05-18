@@ -10,39 +10,34 @@ const cache = new NodeCache({
 
 const app = express();
 app.use(cors())
-app.use(express.json());
+app.use(express.text());
 
 app.get('/api/value/:key', (req, res)=>{
 
     if(!req.headers.token){
-      res.json({
-        message: 'No token was provided. Please, provide a token.'
-      });
+      res.send('No token was provided. Please, provide a token.');
     } else {
-      const value = cache.get(req.headers.token.concat(req.params.key));
-      res.json({
-        value
-      })
+      const item = cache.get(req.headers.token.concat(req.params.key));
+      const response = item ? item.value : 'No value matches the provided token and key.';
+      res.send(response)
     }
 });
 
 app.get('/api/token', function(req, res){
-  res.send({
-    token: uuid()
-  });
+  res.send(uuid());
 })
 
 
-app.post('/api/value',(req, res)=>{
+app.put('/api/value/:key',(req, res)=>{
     if(!req.headers.token){
-      res.json({
-        message: 'No token was provided. Please, provide a token.'
-      });
+      res.send('No token was provided. Please, provide a token.');
     } else {
-      const message = createValueRow(req.headers.token, req.body);
-      res.json({
-        message
-      })
+      const data = {
+        value: req.body,
+        key: req.params.key
+      }
+      createValueRow(req.headers.token, data);
+      res.send('Item has been created.')
     }
 })
 function createValueRow(token, dataToStore){
