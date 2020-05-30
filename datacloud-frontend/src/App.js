@@ -1,6 +1,8 @@
 import React, { useState, useReducer, useEffect } from 'react';
 import { Form, Input, Header, Divider, TextArea, Message } from 'semantic-ui-react';
 import { isEmpty } from 'ramda';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [input, setInputValue] = useReducer(
@@ -34,6 +36,13 @@ function App() {
       },
       body: value
     })
+    .then(result => {
+      if(result.status === 200){
+        toast.success('Value has been saved.')
+      } else {
+        toast.error('Please, validate all fields have been filled.');
+      }
+    })
   };
   const getItem = () => {
     fetch(`https://data-clouds.herokuapp.com/api/value/${key}`, {
@@ -45,6 +54,7 @@ function App() {
   };
   return (
     <div style={{ margin: '1em' }}>
+      <ToastContainer />
       <Header content='Create Key and Value' />
       <Form>
         <Form.Group widths='equal'>
