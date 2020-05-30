@@ -10,7 +10,7 @@ const cache = new NodeCache({
 
 const app = express();
 app.use(cors())
-app.use(express.urlencoded({extended: true}));
+app.use(express.text());
 
 app.get('/api/value/:key', (req, res)=>{
 
@@ -32,11 +32,8 @@ app.put('/api/value/:key',(req, res)=>{
     if(!req.headers.token){
       res.send('No token was provided. Please, provide a token.');
     } else {
-      if(!req.body.hasOwnProperty('text')){
-        res.send('Please, add <text=> before your string')
-      }
       const data = {
-        value: req.body.text,
+        value: req.body,
         key: req.params.key
       }
       createValueRow(req.headers.token, data);
