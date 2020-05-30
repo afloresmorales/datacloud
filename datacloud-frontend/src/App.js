@@ -1,5 +1,5 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { Form, Input, Header, Divider, TextArea, Message } from 'semantic-ui-react';
+import { Form, Input, Header, Divider, TextArea, Message, Button } from 'semantic-ui-react';
 import { isEmpty } from 'ramda';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -8,11 +8,9 @@ function App() {
   const [input, setInputValue] = useReducer(
     (state, newState) => ({ ...state, ...newState }),
     {
-      newToken: '',
+      token: '',
       key: '',
-      newKey: '',
       value: '',
-      token: ''
     }
   );
   const [itemValue, setValue] = useState('');
@@ -21,18 +19,18 @@ function App() {
       method: 'GET',
     })
       .then((response) => response.text())
-      .then((result) => setInputValue({ newToken: result }))
+      .then((result) => setInputValue({ token: result }))
   }, [])
-  const { newToken, token, key, value, newKey } = input;
+  const { token, value, key } = input;
 
   const handleInputChange = event => {
     setInputValue({ [event.target.name]: event.target.value });
   };
   const createItem = () => {
-    fetch(`https://data-clouds.herokuapp.com/api/value/${newKey}`, {
+    fetch(`https://data-clouds.herokuapp.com/api/value/${key}`, {
       method: 'PUT',
       headers: {
-        'token': newToken
+        'token': token
       },
       body: value
     })
@@ -59,7 +57,7 @@ function App() {
       <Form>
         <Form.Group widths='equal'>
           <Form.Field
-            value={newToken}
+            value={token}
             name='newToken'
             label='Token'
             onChange={handleInputChange}
@@ -67,8 +65,8 @@ function App() {
             placeholder='Enter a token'
           />
           <Form.Field
-            value={newKey}
-            name='newKey'
+            value={key}
+            name='key'
             label='Key'
             onChange={handleInputChange}
             control={Input}
@@ -84,31 +82,11 @@ function App() {
           control={TextArea}
           placeholder='Enter data to be saved'
         />
-        <Form.Button type='button' onClick={createItem} disabled={isEmpty(newToken)}>Create</Form.Button>
       </Form>
       <Divider hidden />
-      <Header content='Get Value' />
-      <Form>
-        <Form.Group widths='equal'>
-          <Form.Field
-            value={token}
-            name='token'
-            label='Token'
-            onChange={handleInputChange}
-            control={Input}
-            placeholder='Enter a token'
-          />
-          <Form.Field
-            value={key}
-            name='key'
-            label='Key'
-            onChange={handleInputChange}
-            control={Input}
-            placeholder='Enter a key to identify value'
-          />
-        </Form.Group>
-        <Form.Button type='button' onClick={getItem} disabled={isEmpty(token)}>Get</Form.Button>
-      </Form>
+      <Button type='button' onClick={createItem} disabled={isEmpty(key && value)}>Create</Button>
+      <Divider vertical hidden/>
+      <Button type='button' onClick={getItem} disabled={isEmpty(key && value)}>Get Value</Button>
       <Divider hidden />
       {!isEmpty(itemValue) &&
         <span>
