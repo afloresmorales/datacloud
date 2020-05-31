@@ -1,8 +1,9 @@
 import React, { useState, useReducer, useEffect } from 'react';
-import { Form, Input, Header, Divider, TextArea, Button, Segment, Grid, Message } from 'semantic-ui-react';
+import { Form, Input, Header, Divider, TextArea, Button, Grid, Message } from 'semantic-ui-react';
 import { isEmpty } from 'ramda';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import AcklenHeart from './assets/AcklenHeart';
 
 function App() {
   const [input, setInputValue] = useReducer(
@@ -15,11 +16,19 @@ function App() {
   );
   const [itemValue, setValue] = useState('');
   useEffect(() => {
-    fetch('https://data-clouds.herokuapp.com/api/token', {
-      method: 'GET',
-    })
-      .then((response) => response.text())
-      .then((result) => setInputValue({ token: result }))
+    const existingToken = localStorage.getItem('token');
+    if(!existingToken){
+      fetch('https://data-clouds.herokuapp.com/api/token', {
+        method: 'GET',
+      })
+        .then((response) => response.text())
+        .then((result) => {
+          setInputValue({ token: result });
+          localStorage.setItem('token', result);
+        })
+    } else {
+      setInputValue({token: existingToken});
+    }
   }, [])
   const { token, value, key } = input;
 
@@ -40,7 +49,8 @@ function App() {
         } else {
           toast.error('Please, validate all fields have been filled.');
         }
-      })
+      });
+    setInputValue({ value: '' });
   };
   const getItem = () => {
     fetch(`https://data-clouds.herokuapp.com/api/value/${key}`, {
@@ -53,13 +63,15 @@ function App() {
   return (
     <div style={{ margin: '1em' }}>
       <ToastContainer />
-      <Header content='Create Key and Value' />
+      <Header textAlign='center' style={{fontSize: '20px'}}>
+        MemStash
+      </Header>
       <Form>
         <Form.Group widths='equal'>
           <Form.Field
-            value={token}
-            name='newToken'
             label='Token'
+            value={token}
+            name='token'
             onChange={handleInputChange}
             control={Input}
             placeholder='Enter a token'
@@ -73,7 +85,6 @@ function App() {
             placeholder='Enter a key to identify value'
           />
         </Form.Group>
-
         <Form.Field
           value={value}
           name='value'
@@ -85,41 +96,41 @@ function App() {
       </Form>
       <Divider hidden />
       <Grid columns={2} stackable textAlign='center'>
-          <Grid.Row>
-            <Grid.Column>
-              <Button type='button' onClick={createItem} disabled={isEmpty(key && value)}>Test Put</Button>
-            </Grid.Column>
-            <Grid.Column>
-              <Button type='button' onClick={getItem} disabled={isEmpty(key && value)}>Test Get</Button>
-            </Grid.Column>
-          </Grid.Row>
+        <Grid.Row>
+          <Grid.Column>
+            <Button type='button' onClick={createItem} disabled={isEmpty(key && value)}>Test Put</Button>
+          </Grid.Column>
+          <Grid.Column>
+            <Button type='button' onClick={getItem} disabled={isEmpty(key)}>Test Get</Button>
+          </Grid.Column>
+        </Grid.Row>
       </Grid>
       <Divider hidden />
-        <Grid columns={2} stackable textAlign='center'>
-          <Grid.Row verticalAlign='middle'>
-            <Grid.Column>
-              <Header>
-                PUT Curl
+      <Grid columns={2} stackable textAlign='center'>
+        <Grid.Row verticalAlign='middle'>
+          <Grid.Column>
+            <Header>
+              PUT Curl
               </Header>
-              <Message compact>
-                {`
+            <Message compact>
+              {`
                   curl -H "Content-Type: text/plain" -H "token: ${token}" --request PUT --data "${value}" https://data-clouds.herokuapp.com/api/value/${key}
                 `}
-              </Message>
-            </Grid.Column>
-            <Divider vertical hidden/>
-            <Grid.Column>
-              <Header>
-                GET Curl
+            </Message>
+          </Grid.Column>
+          <Divider vertical hidden />
+          <Grid.Column>
+            <Header>
+              GET Curl
               </Header>
-              <Message compact>
-                {`
+            <Message compact>
+              {`
                 curl -H "token: ${token}" --request GET https://data-clouds.herokuapp.com/api/value/${key}
               `}
-              </Message>
-            </Grid.Column>
-          </Grid.Row>
-        </Grid>
+            </Message>
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
       <Divider hidden />
       {!isEmpty(itemValue) &&
         <span>
@@ -128,6 +139,9 @@ function App() {
           }
         </span>
       }
+      <Header textAlign='center' style={{fontSize: '11px', position: 'fixed', bottom: '12px', left: '0px', right: '0px'}}>
+        Made with <AcklenHeart /> by Acklen Avenue
+      </Header>
     </div>
   );
 }
