@@ -65,69 +65,73 @@ function App() {
   return (
     <div style={{ margin: '1em' }}>
       <ToastContainer />
-      <Header textAlign='center' style={{fontSize: '20px'}}>
-        MemStash
-      </Header>
-      <Form>
-        <Form.Group widths='equal'>
-          <Form.Field>
-            <label>Token</label>
-            <Input
-               icon={<Icon name='recycle' inverted circular link onClick={generateToken} />}
-               value={token}
-               name='token'
-               onChange={handleInputChange}
-               placeholder='Enter a token'
+      <div>
+
+        <Header textAlign='center' style={{fontSize: '20px'}}>
+          MemStash
+        </Header>
+        <Form>
+          <Form.Group widths='equal'>
+            <Form.Field>
+              <label>Token</label>
+              <Input
+                icon={<Icon name='recycle' inverted circular link onClick={generateToken} />}
+                value={token}
+                name='token'
+                onChange={handleInputChange}
+                placeholder='Enter a token'
+              />
+            </Form.Field>
+            <Form.Field
+              value={key}
+              name='key'
+              label='Key'
+              onChange={handleInputChange}
+              control={Input}
+              placeholder='someKey'
             />
-          </Form.Field>
+          </Form.Group>
           <Form.Field
-            value={key}
-            name='key'
-            label='Key'
+            value={value}
+            name='value'
+            label='Value'
             onChange={handleInputChange}
-            control={Input}
-            placeholder='someKey'
+            control={TextArea}
+            placeholder='Enter a key to associate with the value'
           />
-        </Form.Group>
-        <Form.Field
-          value={value}
-          name='value'
-          label='Value'
-          onChange={handleInputChange}
-          control={TextArea}
-          placeholder='Enter data to be saved'
-        />
-      </Form>
-      <Divider hidden />
-      <Grid columns={2} stackable textAlign='center'>
-        <Grid.Row verticalAlign='middle'>
-          <Grid.Column>
-            <Button primary type='button' onClick={createItem} disabled={isEmpty(key && value)}>Test Put</Button>
-            <Header>
-              PUT Curl
+        </Form>
+        <Divider hidden />
+        <Grid columns={2} stackable textAlign='center'>
+          <Grid.Row verticalAlign='middle'>
+            <Grid.Column>
+              <Button primary type='button' onClick={createItem} disabled={isEmpty(key && value)}>Test Put</Button>
+              <Header>
+                PUT Curl
               </Header>
-            <Message compact>
-              {`
-                  curl -H "Content-Type: text/plain" -H "token: ${token}" --request PUT --data "${value}" https://data-clouds.herokuapp.com/values/${key}
+              <Message compact>
+                {`
+                    curl -H "Content-Type: text/plain" -H "token: ${token}" --request PUT --data "${value}" https://data-clouds.herokuapp.com/values/${key}
+                  `}
+              </Message>
+            </Grid.Column>
+            <Grid.Column>
+              <Button primary type='button' onClick={getItem} disabled={isEmpty(key)}>Test Get</Button>
+              <Header>
+                GET Curl
+                </Header>
+              <Message compact>
+                {`
+                  curl -H "token: ${token}" --request GET https://data-clouds.herokuapp.com/values/${key}
                 `}
-            </Message>
-          </Grid.Column>
-          <Grid.Column>
-            <Button primary type='button' onClick={getItem} disabled={isEmpty(key)}>Test Get</Button>
-            <Header>
-              GET Curl
-              </Header>
-            <Message compact>
-              {`
-                curl -H "token: ${token}" --request GET https://data-clouds.herokuapp.com/values/${key}
-              `}
-            </Message>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-      <Divider hidden />
+              </Message>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+        <Divider hidden />
+      </div>
       <Header textAlign='center' style={{fontSize: '11px', position: 'fixed', bottom: '12px', left: '0px', right: '0px'}}>
-        Made with <AcklenHeart /> by <a href='https://acklenavenue.com'>Acklen Avenue</a>
+        Made with 
+        <span style={{verticalAlign: 'middle'}} ><AcklenHeart/></span> by <a href='https://acklenavenue.com'>Acklen Avenue</a>
       </Header>
     </div>
   );
