@@ -118,7 +118,6 @@ function App() {
                 `}
             </Message>
           </Grid.Column>
-          <Divider vertical hidden />
           <Grid.Column>
             <Header>
               GET Curl
