@@ -1,5 +1,5 @@
-import React, { useState, useReducer, useEffect } from 'react';
-import { Form, Input, Header, Divider, TextArea, Button, Grid, Message } from 'semantic-ui-react';
+import React, { useReducer, useEffect } from 'react';
+import { Form, Input, Header, Divider, TextArea, Button, Grid, Message, Icon } from 'semantic-ui-react';
 import { isEmpty } from 'ramda';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,22 +10,24 @@ function App() {
     (state, newState) => ({ ...state, ...newState }),
     {
       token: '',
-      key: 'someKey',
-      value: 'Add data to be saved here',
+      key: '',
+      value: '',
     }
   );
-  const [itemValue, setValue] = useState('');
+ const generateToken = () => {
+  fetch('https://data-clouds.herokuapp.com/api/token', {
+    method: 'GET',
+  })
+    .then((response) => response.text())
+    .then((result) => {
+      setInputValue({ token: result });
+      localStorage.setItem('token', result);
+    })
+ };
   useEffect(() => {
     const existingToken = localStorage.getItem('token');
     if(!existingToken){
-      fetch('https://data-clouds.herokuapp.com/api/token', {
-        method: 'GET',
-      })
-        .then((response) => response.text())
-        .then((result) => {
-          setInputValue({ token: result });
-          localStorage.setItem('token', result);
-        })
+      generateToken();
     } else {
       setInputValue({token: existingToken});
     }
@@ -58,7 +60,7 @@ function App() {
       headers: { 'token': token }
     })
       .then((response) => response.text())
-      .then((result) => setValue(result))
+      .then((result) => setInputValue({value: result}))
   };
   return (
     <div style={{ margin: '1em' }}>
@@ -68,21 +70,23 @@ function App() {
       </Header>
       <Form>
         <Form.Group widths='equal'>
-          <Form.Field
-            label='Token'
-            value={token}
-            name='token'
-            onChange={handleInputChange}
-            control={Input}
-            placeholder='Enter a token'
-          />
+          <Form.Field>
+            <label>Token</label>
+            <Input
+               icon={<Icon name='recycle' inverted circular link onClick={generateToken} />}
+               value={token}
+               name='token'
+               onChange={handleInputChange}
+               placeholder='Enter a token'
+            />
+          </Form.Field>
           <Form.Field
             value={key}
             name='key'
             label='Key'
             onChange={handleInputChange}
             control={Input}
-            placeholder='Enter a key to identify value'
+            placeholder='someKey'
           />
         </Form.Group>
         <Form.Field
@@ -96,19 +100,9 @@ function App() {
       </Form>
       <Divider hidden />
       <Grid columns={2} stackable textAlign='center'>
-        <Grid.Row>
-          <Grid.Column>
-            <Button type='button' onClick={createItem} disabled={isEmpty(key && value)}>Test Put</Button>
-          </Grid.Column>
-          <Grid.Column>
-            <Button type='button' onClick={getItem} disabled={isEmpty(key)}>Test Get</Button>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
-      <Divider hidden />
-      <Grid columns={2} stackable textAlign='center'>
         <Grid.Row verticalAlign='middle'>
           <Grid.Column>
+            <Button primary type='button' onClick={createItem} disabled={isEmpty(key && value)}>Test Put</Button>
             <Header>
               PUT Curl
               </Header>
@@ -119,6 +113,7 @@ function App() {
             </Message>
           </Grid.Column>
           <Grid.Column>
+            <Button primary type='button' onClick={getItem} disabled={isEmpty(key)}>Test Get</Button>
             <Header>
               GET Curl
               </Header>
@@ -131,15 +126,8 @@ function App() {
         </Grid.Row>
       </Grid>
       <Divider hidden />
-      {!isEmpty(itemValue) &&
-        <span>
-          {
-            itemValue
-          }
-        </span>
-      }
       <Header textAlign='center' style={{fontSize: '11px', position: 'fixed', bottom: '12px', left: '0px', right: '0px'}}>
-        Made with <AcklenHeart /> by Acklen Avenue
+        Made with <AcklenHeart /> by <a href='https://acklenavenue.com'>Acklen Avenue</a>
       </Header>
     </div>
   );
