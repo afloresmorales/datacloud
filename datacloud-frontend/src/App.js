@@ -15,7 +15,7 @@ function App() {
     }
   );
  const generateToken = () => {
-  fetch('https://data-clouds.herokuapp.com/api/token', {
+  fetch('https://data-clouds.herokuapp.com/token', {
     method: 'GET',
   })
     .then((response) => response.text())
@@ -38,7 +38,7 @@ function App() {
     setInputValue({ [event.target.name]: event.target.value });
   };
   const createItem = () => {
-    fetch(`https://data-clouds.herokuapp.com/api/value/${key}`, {
+    fetch(`https://data-clouds.herokuapp.com/values/${key}`, {
       method: 'PUT',
       headers: {
         'token': token
@@ -55,7 +55,7 @@ function App() {
     setInputValue({ value: '' });
   };
   const getItem = () => {
-    fetch(`https://data-clouds.herokuapp.com/api/value/${key}`, {
+    fetch(`https://data-clouds.herokuapp.com/values/${key}`, {
       method: 'GET',
       headers: { 'token': token }
     })
@@ -108,7 +108,7 @@ function App() {
               </Header>
             <Message compact>
               {`
-                  curl -H "Content-Type: text/plain" -H "token: ${token}" --request PUT --data "${value}" https://data-clouds.herokuapp.com/api/value/${key}
+                  curl -H "Content-Type: text/plain" -H "token: ${token}" --request PUT --data "${value}" https://data-clouds.herokuapp.com/values/${key}
                 `}
             </Message>
           </Grid.Column>
@@ -119,7 +119,7 @@ function App() {
               </Header>
             <Message compact>
               {`
-                curl -H "token: ${token}" --request GET https://data-clouds.herokuapp.com/api/value/${key}
+                curl -H "token: ${token}" --request GET https://data-clouds.herokuapp.com/values/${key}
               `}
             </Message>
           </Grid.Column>

@@ -12,7 +12,7 @@ const app = express();
 app.use(cors())
 app.use(express.text());
 
-app.get('/api/value/:key', (req, res)=>{
+app.get('/values/:key', (req, res)=>{
 
     if(!req.headers.token){
       res.send('No token was provided. Please, provide a token.');
@@ -23,12 +23,12 @@ app.get('/api/value/:key', (req, res)=>{
     }
 });
 
-app.get('/api/token', function(req, res){
+app.get('/token', function(req, res){
   res.send(uuid());
 })
 
 
-app.put('/api/value/:key',(req, res)=>{
+app.put('/values/:key',(req, res)=>{
     if(!req.headers.token){
       res.send('No token was provided. Please, provide a token.');
     } else {
