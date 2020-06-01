@@ -1,9 +1,11 @@
 import React, { useReducer, useEffect } from 'react';
-import { Form, Input, Header, Divider, TextArea, Button, Grid, Message, Icon, Container } from 'semantic-ui-react';
+import { Form, Input, Header, Divider, TextArea, Button, Grid, Icon, Container } from 'semantic-ui-react';
 import { isEmpty } from 'ramda';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import AcklenHeart from './assets/AcklenHeart';
+
+const backendUrl = process.env.BACKEND_URL || 'https://data-clouds.herokuapp.com'
 
 function App() {
   const [input, setInputValue] = useReducer(
@@ -15,7 +17,7 @@ function App() {
     }
   );
   const generateToken = () => {
-    fetch('https://data-clouds.herokuapp.com/token', {
+    fetch(`${backendUrl}/token`, {
       method: 'GET',
     })
       .then((response) => response.text())
@@ -38,7 +40,7 @@ function App() {
     setInputValue({ [event.target.name]: event.target.value });
   };
   const createItem = () => {
-    fetch(`https://data-clouds.herokuapp.com/values/${key}`, {
+    fetch(`${backendUrl}/values/${key}`, {
       method: 'PUT',
       headers: {
         'token': token
@@ -55,7 +57,7 @@ function App() {
     setInputValue({ value: '' });
   };
   const getItem = () => {
-    fetch(`https://data-clouds.herokuapp.com/values/${key}`, {
+    fetch(`${backendUrl}/values/${key}`, {
       method: 'GET',
       headers: { 'token': token }
     })
@@ -110,7 +112,7 @@ function App() {
               <Form>
                 <Form.TextArea
                   readOnly
-                  value={`curl -H "Content-Type: text/plain" -H "token: ${token}" --request PUT --data "${value}" https://data-clouds.herokuapp.com/values/${key}`}
+                  value={`curl -H "Content-Type: text/plain" -H "token: ${token}" --request PUT --data "${value}" ${backendUrl}/values/${key}`}
                   style={{ minHeight: 100 }}
                 />
               </Form>
@@ -123,7 +125,7 @@ function App() {
               <Form>
                 <Form.TextArea
                   readOnly
-                  value={`curl -H "token: ${token}" --request GET https://data-clouds.herokuapp.com/values/${key}`}
+                  value={`curl -H "token: ${token}" --request GET ${backendUrl}/values/${key}`}
                   style={{ minHeight: 100 }}
                 />
               </Form>
